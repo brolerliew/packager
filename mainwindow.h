@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QFileInfo>
+#include <QDir>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -18,7 +19,7 @@ public:
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
-    QString srcFile;
-    QString dstPath;
+    QFileInfo srcFile;
+    QDir dstDir;
 };
 #endif // MAINWINDOW_H
