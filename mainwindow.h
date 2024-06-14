@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QFileInfo>
 #include <QDir>
+#include "libpacker/packer.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -19,7 +21,6 @@ public:
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
-    QFileInfo srcFile;
-    QDir dstDir;
+    Packer packer;
 };
 #endif // MAINWINDOW_H

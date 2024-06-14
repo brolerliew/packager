@@ -9,23 +9,22 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    dstDir = QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0];
-    ui->pushButton_dst->setText("Output Dir:"+dstDir.absolutePath());
+    packer.setDstPath(QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0].toStdString());
+    ui->pushButton_dst->setText("Output Dir:"+ QString::fromStdString(packer.getDstPath().string()));
 
     connect(ui->pushButton_src,&QPushButton::clicked,this, [this](){
         QString fileName = QFileDialog::getOpenFileName(this,tr("Select Binary"), "/bin");
         if(fileName.isEmpty()){
             return;
         }
-        srcFile.setFile(fileName);
-        if(!srcFile.isExecutable()){
+        if(!packer.setBin(fileName.toStdString())){
             QMessageBox::warning(this, tr("Packager"),
-                                 tr("File not ELF"),
+                                 tr((fileName +"File not ELF").toStdString().c_str()),
                                  QMessageBox::Ok,
                                  QMessageBox::Ok);
-            srcFile.setFile("");
             return;
         }
+
         ui->pushButton_src->setText("Selected ELF:"+fileName);
     });
     connect(ui->pushButton_dst,&QPushButton::clicked,this, [this](){
@@ -34,22 +33,11 @@ MainWindow::MainWindow(QWidget *parent)
         if(dirName.isEmpty()){
             return;
         }
-        dstDir = dirName;
-        ui->pushButton_dst->setText("Output Dir:"+dstDir.absolutePath());
+        packer.setDstPath(dirName.toStdString());
+        ui->pushButton_dst->setText("Output Dir:"+ dirName);
     });
     connect(ui->pushButton_do,&QPushButton::clicked,this, [this](){
-        if(!srcFile.exists()){
-            QMessageBox::warning(this, tr("Packager"),
-                                           tr("Not select ELF file to Package"),
-                                           QMessageBox::Ok,
-                                           QMessageBox::Ok);
-            return;
-        }
-        QString name = srcFile.fileName();
-        QString rootDir = "pack/deb/"+name+"/opt/"+name;
-        if(!dstDir.mkpath(rootDir)){
-            return;
-        }
+        packer.doPack();
     });
 }
 
