@@ -8,7 +8,6 @@ void itemAddRecur(QTreeWidgetItem* item, std::vector<LddTreeNode>& lddNodes){
     for(auto& node: lddNodes){
         QTreeWidgetItem* itemAdd = new QTreeWidgetItem(item, QStringList(QString::fromStdString(node.path.string())));
         item->addChild(itemAdd);
-        //qDebug()<<"add:"<< nodeChild.path;
         itemAddRecur(itemAdd, node.nodes);
     }
 }
@@ -43,6 +42,11 @@ MainWindow::MainWindow(QWidget *parent)
         std::vector<LddTreeNode> lddNodes = packer.get_lddNodes();
         itemAddRecur(root, lddNodes);
         ui->treeWidget->expandAll();
+
+        ui->listWidget->clear();
+        for(auto path:packer.get_lddPaths()){
+            ui->listWidget->addItem(QString::fromStdString(path.string()));
+        }
     });
     connect(ui->pushButton_dst,&QPushButton::clicked,this, [this](){
         QString dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory"), "/home",

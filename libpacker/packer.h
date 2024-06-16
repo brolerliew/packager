@@ -21,6 +21,7 @@ public:
     void setDstPath(std::filesystem::path outputPath){outputPath_ = outputPath;}
     fs::path getDstPath(){return outputPath_;}
     std::vector<LddTreeNode> get_lddNodes(){return lddNodes_;};
+    std::set<std::filesystem::path> get_lddPaths(){return lddPaths_;};
 
     bool out_deb = false;
     bool out_rpm = false;

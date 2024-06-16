@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>378</height>
+    <width>945</width>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,20 +18,30 @@
     <property name="sizeConstraint">
      <enum>QLayout::SetMaximumSize</enum>
     </property>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="pushButton_dst">
-      <property name="text">
-       <string>Select Output Directory</string>
+    <item row="7" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="topMargin">
+       <number>0</number>
       </property>
-     </widget>
+      <item>
+       <widget class="QTreeWidget" name="treeWidget">
+        <column>
+         <property name="text">
+          <string notr="true">1</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListWidget" name="listWidget"/>
+      </item>
+     </layout>
     </item>
-    <item row="4" column="0">
-     <widget class="QTreeWidget" name="treeWidget">
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="pushButton_additional">
+      <property name="text">
+       <string>Add Additional Binary</string>
+      </property>
      </widget>
     </item>
     <item row="0" column="0">
@@ -39,12 +49,15 @@
       <property name="text">
        <string>Select Binary</string>
       </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="pushButton_additional">
+    <item row="2" column="0">
+     <widget class="QPushButton" name="pushButton_dst">
       <property name="text">
-       <string>Add Additional Binary</string>
+       <string>Select Output Directory</string>
       </property>
      </widget>
     </item>
@@ -97,7 +110,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>660</width>
+     <width>945</width>
      <height>23</height>
     </rect>
    </property>
