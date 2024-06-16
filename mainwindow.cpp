@@ -4,11 +4,22 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDir>
+void itemAddRecur(QTreeWidgetItem* item, std::vector<LddTreeNode>& lddNodes){
+    for(auto& node: lddNodes){
+        QTreeWidgetItem* itemAdd = new QTreeWidgetItem(item, QStringList(QString::fromStdString(node.path.string())));
+        item->addChild(itemAdd);
+        //qDebug()<<"add:"<< nodeChild.path;
+        itemAddRecur(itemAdd, node.nodes);
+    }
+}
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->treeWidget->setColumnCount(1);
+    ui->treeWidget->setHeaderLabel("Ldd Tree");
+
     packer.setDstPath(QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0].toStdString());
     ui->pushButton_dst->setText("Output Dir:"+ QString::fromStdString(packer.getDstPath().string()));
 
@@ -24,8 +35,14 @@ MainWindow::MainWindow(QWidget *parent)
                                  QMessageBox::Ok);
             return;
         }
-
         ui->pushButton_src->setText("Selected ELF:"+fileName);
+
+        ui->treeWidget->clear();
+        QTreeWidgetItem* root = new QTreeWidgetItem(ui->treeWidget, QStringList(fileName));
+        ui->treeWidget->insertTopLevelItem(0, root);
+        std::vector<LddTreeNode> lddNodes = packer.get_lddNodes();
+        itemAddRecur(root, lddNodes);
+        ui->treeWidget->expandAll();
     });
     connect(ui->pushButton_dst,&QPushButton::clicked,this, [this](){
         QString dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory"), "/home",
