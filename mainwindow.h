@@ -20,6 +20,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private:
+    void updateLabels();
     Ui::MainWindow *ui;
     Packer packer;
 };
