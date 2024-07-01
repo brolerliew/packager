@@ -4,16 +4,6 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDir>
-void MainWindow::updateLabels(){
-    ui->label_contact->setText(QString::fromStdString(packer.contact));
-    ui->label_desc->setText(QString::fromStdString(packer.desc));
-    ui->label_icon->setText(QString::fromStdString(packer.icon.string()));
-    ui->label_license->setText(QString::fromStdString(packer.license));
-    ui->label_packageName->setText(QString::fromStdString(packer.packageName));
-    ui->label_url->setText(QString::fromStdString(packer.url));
-    ui->label_version->setText(QString::fromStdString(packer.version));
-}
-
 void itemAddRecur(QTreeWidgetItem* item, std::vector<LddTreeNode>& lddNodes){
     for(auto& node: lddNodes){
         QTreeWidgetItem* itemAdd = new QTreeWidgetItem(item, QStringList(QString::fromStdString(node.path.string())));
@@ -21,6 +11,26 @@ void itemAddRecur(QTreeWidgetItem* item, std::vector<LddTreeNode>& lddNodes){
         itemAddRecur(itemAdd, node.nodes);
     }
 }
+void MainWindow::updateLabels(){
+    ui->label_contact->setText(QString::fromStdString(packer.contact));
+    ui->label_desc->setText(QString::fromStdString(packer.desc));
+    ui->label_icon->setText(QString::fromStdString(packer.icon.string()));
+    ui->label_license->setText(QString::fromStdString(packer.license));
+    ui->label_url->setText(QString::fromStdString(packer.url));
+    ui->label_version->setText(QString::fromStdString(packer.version));
+    ui->treeWidget->clear();
+    QTreeWidgetItem* root = new QTreeWidgetItem(ui->treeWidget, QStringList("root"));
+    ui->treeWidget->insertTopLevelItem(0, root);
+    std::vector<LddTreeNode> lddNodes = packer.get_lddNodes();
+    itemAddRecur(root, lddNodes);
+    ui->treeWidget->expandAll();
+
+    ui->listWidget->clear();
+    for(auto path:packer.get_lddPaths()){
+        ui->listWidget->addItem(QString::fromStdString(path.string()));
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -45,18 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
             return;
         }
         ui->pushButton_src->setText("Selected ELF:"+fileName);
-
-        ui->treeWidget->clear();
-        QTreeWidgetItem* root = new QTreeWidgetItem(ui->treeWidget, QStringList(fileName));
-        ui->treeWidget->insertTopLevelItem(0, root);
-        std::vector<LddTreeNode> lddNodes = packer.get_lddNodes();
-        itemAddRecur(root, lddNodes);
-        ui->treeWidget->expandAll();
-
-        ui->listWidget->clear();
-        for(auto path:packer.get_lddPaths()){
-            ui->listWidget->addItem(QString::fromStdString(path.string()));
-        }
         updateLabels();
     });
     connect(ui->pushButton_dst,&QPushButton::clicked,this, [this](){
@@ -74,6 +72,14 @@ MainWindow::MainWindow(QWidget *parent)
         packer.out_rpm = ui->checkBox_rpm->isChecked();
         packer.out_zip = ui->checkBox_zip->isChecked();
         packer.doPack();
+    });
+    connect(ui->pushButton_additional,&QPushButton::clicked,this, [this](){
+        QString path = QFileDialog::getOpenFileName(this,tr("Select File or Dir"), "/bin");
+        if(path.isEmpty()){
+            return;
+        }
+        packer.addExtra(path.toStdString());
+        updateLabels();
     });
 }
 
