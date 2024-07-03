@@ -18,6 +18,13 @@
     <property name="sizeConstraint">
      <enum>QLayout::SetMaximumSize</enum>
     </property>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="pushButton_dst">
+      <property name="text">
+       <string>Select Output Directory</string>
+      </property>
+     </widget>
+    </item>
     <item row="7" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="topMargin">
@@ -36,30 +43,6 @@
        <widget class="QListWidget" name="listWidget"/>
       </item>
      </layout>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="pushButton_dst">
-      <property name="text">
-       <string>Select Output Directory</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="0">
-     <widget class="QPushButton" name="pushButton_additional">
-      <property name="text">
-       <string>Add Additional Binary</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="pushButton_src">
-      <property name="text">
-       <string>Select Binary</string>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
-     </widget>
     </item>
     <item row="5" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -94,7 +77,7 @@
            <string>AppImg</string>
           </property>
           <property name="checked">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -102,6 +85,16 @@
          <widget class="QCheckBox" name="checkBox_rpm">
           <property name="text">
            <string>Rpm</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_dir">
+          <property name="text">
+           <string>Directory</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -119,7 +112,31 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="pushButton_src">
+      <property name="text">
+       <string>Select Binary</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
+     <widget class="QPushButton" name="pushButton_additional">
+      <property name="text">
+       <string>Add Additional File</string>
+      </property>
+     </widget>
+    </item>
     <item row="9" column="0">
+     <widget class="QPushButton" name="pushButton_additional_data">
+      <property name="text">
+       <string>Add Additional Directory</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="topMargin">
        <number>0</number>
@@ -132,80 +149,40 @@
         <property name="topMargin">
          <number>0</number>
         </property>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="pushButton_desc">
-          <property name="text">
-           <string>Description </string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
-         <widget class="QLabel" name="label_desc">
+         <widget class="QLineEdit" name="lineEdit_desc"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>TextLabel</string>
+           <string>Description</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="pushButton_license">
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_2">
           <property name="text">
            <string>License</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="label_license">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lineEdit_license"/>
         </item>
-        <item row="2" column="0">
-         <widget class="QPushButton" name="pushButton_contact">
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_3">
           <property name="text">
            <string>Contact</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QLabel" name="label_contact">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lineEdit_contact"/>
         </item>
        </layout>
       </item>
       <item>
        <layout class="QFormLayout" name="formLayout_5">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="pushButton_url">
-          <property name="text">
-           <string>Url</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="pushButton_url_2">
-          <property name="text">
-           <string>Version</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="label_url">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="label_version">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="0">
          <widget class="QPushButton" name="pushButton_icon">
           <property name="text">
@@ -216,9 +193,29 @@
         <item row="2" column="1">
          <widget class="QLabel" name="label_icon">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Url</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineEdit_url"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Version</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit_version"/>
         </item>
        </layout>
       </item>

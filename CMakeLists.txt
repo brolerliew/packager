@@ -26,6 +26,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(packager
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        dialogadvance.h dialogadvance.cpp dialogadvance.ui
+        dialogprogress.h dialogprogress.cpp dialogprogress.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET packager APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

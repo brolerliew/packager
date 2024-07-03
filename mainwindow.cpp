@@ -4,6 +4,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDir>
+#include "dialogprogress.h"
 void itemAddRecur(QTreeWidgetItem* item, std::vector<LddTreeNode>& lddNodes){
     for(auto& node: lddNodes){
         QTreeWidgetItem* itemAdd = new QTreeWidgetItem(item, QStringList(QString::fromStdString(node.path.string())));
@@ -12,12 +13,12 @@ void itemAddRecur(QTreeWidgetItem* item, std::vector<LddTreeNode>& lddNodes){
     }
 }
 void MainWindow::updateLabels(){
-    ui->label_contact->setText(QString::fromStdString(packer.contact));
-    ui->label_desc->setText(QString::fromStdString(packer.desc));
+    ui->lineEdit_contact->setText(QString::fromStdString(packer.contact));
+    ui->lineEdit_desc->setText(QString::fromStdString(packer.desc));
     ui->label_icon->setText(QString::fromStdString(packer.icon.string()));
-    ui->label_license->setText(QString::fromStdString(packer.license));
-    ui->label_url->setText(QString::fromStdString(packer.url));
-    ui->label_version->setText(QString::fromStdString(packer.version));
+    ui->lineEdit_license->setText(QString::fromStdString(packer.license));
+    ui->lineEdit_url->setText(QString::fromStdString(packer.url));
+    ui->lineEdit_version->setText(QString::fromStdString(packer.version));
     ui->treeWidget->clear();
     QTreeWidgetItem* root = new QTreeWidgetItem(ui->treeWidget, QStringList("root"));
     ui->treeWidget->insertTopLevelItem(0, root);
@@ -27,6 +28,9 @@ void MainWindow::updateLabels(){
 
     ui->listWidget->clear();
     for(auto path:packer.get_lddPaths()){
+        ui->listWidget->addItem(QString::fromStdString(path.string()));
+    }
+    for(auto path:packer.getExtra()){
         ui->listWidget->addItem(QString::fromStdString(path.string()));
     }
 }
@@ -58,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
         updateLabels();
     });
     connect(ui->pushButton_dst,&QPushButton::clicked,this, [this](){
-        QString dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory"), "/home",
+        QString dirName = QFileDialog::getExistingDirectory(this, tr("Select Directory"), QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0],
                                                         QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
         if(dirName.isEmpty()){
             return;
@@ -67,20 +71,70 @@ MainWindow::MainWindow(QWidget *parent)
         ui->pushButton_dst->setText("Output Dir:"+ dirName);
     });
     connect(ui->pushButton_do,&QPushButton::clicked,this, [this](){
+        if(packer.getBin().empty()){
+            QMessageBox::warning(this, tr("Packager"),
+                                 tr("Bin not selected"),
+                                 QMessageBox::Ok,
+                                 QMessageBox::Ok);
+            return;
+        }
         packer.out_appimg = ui->checkBox_appimg->isChecked();
+        if(packer.out_appimg&& ui->label_icon->text().isEmpty()){
+            QMessageBox::warning(this, tr("Packager"),
+                                 tr("Appimg need select icon"),
+                                 QMessageBox::Ok,
+                                 QMessageBox::Ok);
+            return;
+        }
         packer.out_deb = ui->checkBox_deb->isChecked();
         packer.out_rpm = ui->checkBox_rpm->isChecked();
         packer.out_zip = ui->checkBox_zip->isChecked();
-        packer.doPack();
+        packer.contact=ui->lineEdit_contact->text().toStdString();
+        packer.version = ui->lineEdit_version->text().toStdString();
+        packer.url = ui->lineEdit_url->text().toStdString();
+        packer.desc = ui->lineEdit_desc->text().toStdString();
+        packer.icon = ui->label_icon->text().toStdString();
+        DialogProgress progress(&packer);
+        progress.exec();
     });
     connect(ui->pushButton_additional,&QPushButton::clicked,this, [this](){
-        QString path = QFileDialog::getOpenFileName(this,tr("Select File or Dir"), "/bin");
+        QString path = QFileDialog::getOpenFileName(this,tr("Select File, if Binary file selected, will load dependency"), "/bin");
         if(path.isEmpty()){
             return;
         }
-        packer.addExtra(path.toStdString());
+        if(!packer.addExtra(path.toStdString())){
+            QMessageBox::warning(this, tr("Packager"),
+                                 tr((path +" add failed").toStdString().c_str()),
+                                 QMessageBox::Ok,
+                                 QMessageBox::Ok);
+            return;
+        }
         updateLabels();
     });
+    connect(ui->pushButton_additional_data,&QPushButton::clicked,this, [this](){
+        QString path = QFileDialog::getExistingDirectory(this,tr("Select Data Dir"), QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0]);
+        if(path.isEmpty()){
+            return;
+        }
+        if(!packer.addExtra(path.toStdString())){
+            QMessageBox::warning(this, tr("Packager"),
+                                 tr((path +" add failed").toStdString().c_str()),
+                                 QMessageBox::Ok,
+                                 QMessageBox::Ok);
+            return;
+        }
+        updateLabels();
+    });
+    connect(ui->pushButton_icon,&QPushButton::clicked,this, [this](){
+        QString path = QFileDialog::getOpenFileName(this,tr("Select Icon file"),
+                                                    QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0],
+                                                    tr("Images (*.png *.svg *.jpg *.jpeg)"));
+        if(path.isEmpty()){
+            return;
+        }
+        ui->label_icon->setText(path);
+    });
+
 }
 
 MainWindow::~MainWindow()
