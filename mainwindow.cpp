@@ -33,6 +33,7 @@ void MainWindow::updateLabels(){
     for(auto path:packer.getExtra()){
         ui->listWidget->addItem(QString::fromStdString(path.string()));
     }
+    ui->pushButton_dst->setText("Output Dir:"+ QString::fromStdString(packer.getDstPath()));
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -68,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
             return;
         }
         packer.setDstPath(dirName.toStdString());
-        ui->pushButton_dst->setText("Output Dir:"+ dirName);
+        ui->pushButton_dst->setText("Output Dir:"+ QString::fromStdString(packer.getDstPath()));
     });
     connect(ui->pushButton_do,&QPushButton::clicked,this, [this](){
         if(packer.getBin().empty()){
@@ -89,6 +90,8 @@ MainWindow::MainWindow(QWidget *parent)
         packer.out_deb = ui->checkBox_deb->isChecked();
         packer.out_rpm = ui->checkBox_rpm->isChecked();
         packer.out_zip = ui->checkBox_zip->isChecked();
+        packer.out_dir = ui->checkBox_dir->isChecked();
+
         packer.contact=ui->lineEdit_contact->text().toStdString();
         packer.version = ui->lineEdit_version->text().toStdString();
         packer.url = ui->lineEdit_url->text().toStdString();
