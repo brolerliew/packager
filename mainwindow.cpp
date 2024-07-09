@@ -135,6 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
         if(path.isEmpty()){
             return;
         }
+        packer.icon = path.toStdString();
         ui->label_icon->setText(path);
     });
 
