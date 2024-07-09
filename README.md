@@ -1,3 +1,14 @@
+# Packager
+Packager collect all binary dependencies build self contained deb、rpm、appimg、portable zip package.
+
+Current support platform only.
+
+# Details
+## Install prefix
+appimg and zip package can place to antwhere and can be directly executed.
+
+deb and rpm are installed to /opt by default. You can run installed binary from /opt/binary/name
+
 ## Package organization
 Take top for example, the final package directory contains:
 bash bin/ lib/ data/
